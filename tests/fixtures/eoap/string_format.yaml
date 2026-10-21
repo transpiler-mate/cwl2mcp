@@ -1,0 +1,238 @@
+# Copyright 2025 Terradue
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# https://opis.io/json-schema/2.x/formats.html
+
+# type: string
+# format: date
+
+- type: record
+  name: Date
+  doc: Represents a date in the `YYYY-MM-DD` format.
+  fields:
+  - name: value
+    type: string
+    doc: A date in the `YYYY-MM-DD` format.
+
+# type: string
+# format: date-time
+
+- type: record
+  name: DateTime
+  doc: Represents a date-time in the `YYYY-MM-DDThh:mm:ss.sTZD` format.
+  fields:
+  - name: value
+    type: string
+    doc: A date-time in the `YYYY-MM-DDThh:mm:ss.sTZD` format.
+
+# type: string
+# format: duration
+
+- type: record
+  name: Duration
+  doc: Represents a duration as specified by _ISO 8601_.
+  fields:
+  - name: value
+    type: string
+    doc: A duration as specified by _ISO 8601_.
+
+# type: string
+# format: email
+
+- type: record
+  name: Email
+  doc: Represents a valid [e-mail address](https://www.rfc-editor.org/rfc/rfc5322.html#page-16) format.
+  fields:
+  - name: value
+    type: string
+    doc: A valid [e-mail address](https://www.rfc-editor.org/rfc/rfc5322.html#page-16) address format.
+
+# type: string
+# format: hostname
+
+- type: record
+  name: Hostname
+  doc: Represents a valid [hostname](https://datatracker.ietf.org/doc/html/rfc1123).
+  fields:
+  - name: value
+    type: string
+    doc: A valid [hostname](https://datatracker.ietf.org/doc/html/rfc1123).
+
+# type: string
+# format: idn-email
+
+- type: record
+  name: IDNEmail
+  doc: Represents a valid idn e-mail address format.
+  fields:
+  - name: value
+    type: string
+    doc: A valid idn e-mail address format.
+
+# type: string
+# format: idn-hostname
+
+- type: record
+  name: IDNHostname
+  doc: Represents a valid IDN hostname.
+  fields:
+  - name: value
+    type: string
+    doc: A valid IDN hostname.
+
+# type: string
+# format: ipv4
+
+- type: record
+  name: IPv4
+  doc: Represents a valid [IPv4](https://www.rfc-editor.org/rfc/rfc791.html) address.
+  fields:
+  - name: value
+    type: string
+    doc: A valid [IPv4](https://www.rfc-editor.org/rfc/rfc791.html) address.
+
+# type: string
+# format: ipv6
+
+- type: record
+  name: IPv6
+  doc: Represents a valid [IPv6](https://www.rfc-editor.org/rfc/rfc4291.html) address.
+  fields:
+  - name: value
+    type: string
+    doc: A valid [IPv6](https://www.rfc-editor.org/rfc/rfc4291.html) address.
+
+# type: string
+# format: iri
+
+- type: record
+  name: IRI
+  doc: Represents a valid [IRI](https://datatracker.ietf.org/doc/html/rfc3987).
+  fields:
+  - name: value
+    type: string
+    doc: A valid [IRI](https://datatracker.ietf.org/doc/html/rfc3987).
+
+# type: string
+# format: iri-reference
+
+- type: record
+  name: IRIReference
+  doc: Represents a valid [IRI](https://datatracker.ietf.org/doc/html/rfc3987) reference.
+  fields:
+  - name: value
+    type: string
+    doc: A valid [IRI](https://datatracker.ietf.org/doc/html/rfc3987) reference.
+
+# type: string
+# format: password
+
+- type: record
+  name: Password
+  doc: Represents a valid password.
+  fields:
+  - name: value
+    type: string
+    doc: A valid password.
+
+# type: string
+# format: json-pointer
+
+- type: record
+  name: JsonPointer
+  doc: Represents a valid (absolute) [JSON pointer](https://datatracker.ietf.org/doc/html/rfc6901).
+  fields:
+  - name: value
+    type: string
+    doc: A valid (absolute) [JSON pointer](https://datatracker.ietf.org/doc/html/rfc6901).
+
+# type: string
+# format: relative-json-pointer
+
+- type: record
+  name: RelativeJsonPointer
+  doc: Represents a valid relative [JSON pointer](https://datatracker.ietf.org/doc/html/rfc6901).
+  fields:
+  - name: value
+    type: string
+    doc: A valid relative [JSON pointer](https://datatracker.ietf.org/doc/html/rfc6901).
+
+# type: string
+# format: uuid
+
+- type: record
+  name: UUID
+  doc: A valid string representation of a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier).
+  fields:
+  - name: value
+    type: string
+    doc: A valid string representation of a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier).
+
+# type: string
+# format: uri
+
+- type: record
+  name: URI
+  doc: Represents a valid [URI](https://datatracker.ietf.org/doc/html/rfc3986).
+  fields:
+  - name: value
+    type: string
+    doc: A valid [URI](https://datatracker.ietf.org/doc/html/rfc3986).
+
+# type: string
+# format: uri-reference
+
+- type: record
+  name: URIReference
+  doc: Represents a valid [URI](https://datatracker.ietf.org/doc/html/rfc3986) reference.
+  fields:
+  - name: value
+    type: string
+    doc: A valid [URI](https://datatracker.ietf.org/doc/html/rfc3986) reference.
+
+# type: string
+# format: uri-template
+
+- type: record
+  name: URITemplate
+  doc: Represents a valid [URI template](https://datatracker.ietf.org/doc/html/rfc6570).
+  fields:
+  - name: value
+    type: string
+    doc: A valid [URI template](https://datatracker.ietf.org/doc/html/rfc6570).
+
+# type: string
+# format: time
+
+- type: record
+  name: Time
+  doc: Represents a time in the `hh:mm:ss.sTZD` format.
+  fields:
+  - name: value
+    type: string
+    doc: A time in the `hh:mm:ss.sTZD` format.
+
+# type: string
+# pattern: ^pattern$
+
+- type: record
+  name: Pattern
+  doc: Validate string value against a regular expression syntax based on the ECMA 262 (JavaScript) dialect.
+  fields:
+  - name: value
+    type: string
+    doc: A generic string value.
+  - name: pattern
+    type: string
+    doc: A regular expression syntax based on the ECMA 262 (JavaScript) dialect.

@@ -1,0 +1,134 @@
+# Copyright 2026 Terradue
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+$schema: https://json-schema.org/draft/2020-12/schema
+$ref: '#/$defs/McpTool'
+$comment: >-
+  Source: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool .
+  This is a custom strict authoring profile, not the official protocol schema.
+  It rejects unknown tool fields, enforces recommended tool-name syntax, and
+  restricts embedded schemas to Draft 2020-12. Replace example.org/tool-guidance
+  with your own namespace in both schema and instances. Defaults document
+  behavior; validators do not insert them. Payload validation against
+  inputSchema/outputSchema is a separate step. External schema references must
+  be resolved by the payload validator.
+
+$defs:
+
+  ToolAnnotations:
+    type: object
+    additionalProperties: false
+    description: >-
+      Optional behavioral hints, not enforced guarantees. Destructive and
+      idempotent hints are only meaningful when readOnlyHint is false.
+    properties:
+      title:
+        type: string
+        description: Legacy display title; tool.title takes precedence.
+      readOnlyHint:
+        type: boolean
+        default: false
+        description: True if the tool does not modify its environment.
+      destructiveHint:
+        type: boolean
+        default: true
+        description: >-
+          True if destructive updates are possible; false indicates only
+          additive updates. Meaningful only for non-read-only tools.
+      idempotentHint:
+        type: boolean
+        default: false
+        description: >-
+          True if repeated identical calls have no additional environmental
+          effects. Does not require identical response data. Meaningful only for
+          non-read-only tools.
+      openWorldHint:
+        type: boolean
+        default: true
+        description: >-
+          True for interaction with an open world of external entities; false
+          for a closed interaction domain.
+
+  Icon:
+    type: object
+    required:
+      - src
+    additionalProperties: false
+    properties:
+      src:
+        type: string
+        format: uri
+      mimeType:
+        type: string
+      sizes:
+        type: array
+        items:
+          type: string
+      theme:
+        enum:
+          - light
+          - dark
+
+  McpTool:
+    title: MCP Tool — strict authoring profile (2025-11-25)
+    description: >-
+      Validates one MCP Tool definition, not a tools/list response or invocation.
+      Includes all standard Tool fields for MCP 2025-11-25 and an optional custom
+      guidance convention.
+    type: object
+    required:
+      - name
+      - inputSchema
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        minLength: 1
+        maxLength: 128
+        pattern: '^[A-Za-z0-9_.-]+$'
+        description: Canonical callable name. This profile enforces MCP naming recommendations.
+      title:
+        type: string
+        description: Human-readable display name.
+      description:
+        type: string
+        description: Purpose and usage guidance presented to the model.
+      inputSchema:
+        type: object
+        description: Schema for tools/call arguments.
+      outputSchema:
+        type: object
+        description: 'Schema for structuredContent, not the full response envelope.'
+      annotations:
+        $ref: '#/$defs/ToolAnnotations'
+      icons:
+        type: array
+        items:
+          $ref: '#/$defs/Icon'
+      execution:
+        type: object
+        properties:
+          taskSupport:
+            enum:
+              - forbidden
+              - optional
+              - required
+            default: optional
+        additionalProperties: false
+      _meta:
+        type: object
+        additionalProperties: true
+        description: >-
+          Extensible metadata. Custom guidance has no standard MCP routing or alias
+          semantics.

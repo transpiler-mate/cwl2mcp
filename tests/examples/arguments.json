@@ -1,0 +1,5 @@
+{
+  "source": {"value": "https://example.org/data.tif"},
+  "timestamp": {"value": "2026-10-18T06:00:00Z"},
+  "point": {"type": "Point", "coordinates": [12.5, 41.9], "bbox": [12.5, 41.9, 12.5, 41.9]}
+}

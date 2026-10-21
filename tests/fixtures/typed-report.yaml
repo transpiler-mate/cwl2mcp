@@ -1,0 +1,9 @@
+- name: Report
+  type: record
+  fields:
+    - name: message
+      type: string
+    - name: tags
+      type:
+        type: array
+        items: string

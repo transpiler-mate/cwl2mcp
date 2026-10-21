@@ -1,0 +1,71 @@
+# Copyright 2025 Terradue
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: '3'
+
+includes:
+  json: https://raw.githubusercontent.com/Terradue/taskfile-utils/refs/heads/main/json.yaml
+  quality: https://raw.githubusercontent.com/Terradue/taskfile-utils/refs/heads/main/quality.yaml
+
+tasks:
+
+  default:
+    cmds:
+    - task: quality:pre-commit:run
+
+  generate_mpc_tool:
+    cmds:
+    - task: json:create_models
+      vars:
+        SCHEMA: './schemas/mcp-tool.yaml'
+        ADDITIONAL_IMPORTS: 'pydantic.AliasChoices'
+        CUSTOM_TEMPLATE_DIR: './templates'
+        OUTPUT: './src/cwl2mcp/mcp_tool.py'
+
+  generate_mpc_hint:
+    cmds:
+    - |
+      uv run \
+      --no-cache \
+      --no-project \
+      --with schema-salad[pycodegen] \
+      schema-salad-tool \
+      --codegen=python \
+      --codegen-parent 'https://w3id.org/cwl/cwl=cwl_utils.parser.cwl_v1_2' \
+      --codegen-parent 'https://w3id.org/cwl/salad=schema_salad.metaschema' \
+      ./schemas/hints.yaml > ./src/cwl2mcp/mcp_hint.py
+    # These reviewed rewrites normalize upstream runtime style without changing
+    # schema fields or validators. Keep them reproducible on regeneration.
+    - hatch run dev:ruff check --fix --unsafe-fixes --select SIM108,SIM118,UP031,RUF059,RET504 src/cwl2mcp/mcp_hint.py
+    - hatch run dev:fix src/cwl2mcp/mcp_hint.py
+
+  generate_models:
+    cmds:
+    - task: generate_mpc_tool
+    - task: generate_mpc_hint
+
+  generate_schema_doc:
+    cmds:
+    - |
+      uv run \
+      --no-cache \
+      --no-project \
+      --with schema-salad \
+      schema-salad-doc \
+      --brand 'CWL to MCP hints' \
+      --brandlink index.md \
+      --primtype 'https://www.commonwl.org/v1.2/SchemaSalad.html#PrimitiveType' \
+      --only 'https://eoap.github.io/cwl-mcp-extension#Annotations' \
+      --only 'https://eoap.github.io/cwl-mcp-extension#Tool' \
+      ./schemas/hints.yaml > ./docs/reference/hints_schema.html
