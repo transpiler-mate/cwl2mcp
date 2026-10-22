@@ -52,8 +52,8 @@ def test_metadata_precedence_prefix_aliases_and_false_hints() -> None:
     assert tool["description"] == "CWL doc"
     assert tool["_meta"] == {
         "example.org/mcp-aliases": ["alias"],
-        "example.org/mcp-use_when": "needed",
-        "example.org/mcp-do_not_use_when": "unnecessary",
+        "example.org/mcp-use-when": "needed",
+        "example.org/mcp-do-not-use-when": "unnecessary",
     }
     assert tool["annotations"] == dict.fromkeys(
         ["readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"], False

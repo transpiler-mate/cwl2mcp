@@ -26,12 +26,12 @@ from .mcp_hint import Tool as ToolHint
 from .mcp_tool import McpTool, ToolAnnotations
 
 
-def to_snake_case(name: str) -> str:
+def to_kebab_case(name: str) -> str:
     """Convert a camel-case metadata property name to snake case."""
     # Insert underscore between lowercase/digit and uppercase,
     # and between consecutive uppercase and uppercase+lowercase
-    separated_words = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", separated_words).lower()
+    separated_words = re.sub("(.)([A-Z][a-z]+)", r"\1-\2", name)
+    return re.sub("([a-z0-9])([A-Z])", r"\1-\2", separated_words).lower()
 
 
 def _expand_hint_class(hint_class: str, namespaces: Mapping[str, str]) -> str:
@@ -122,7 +122,7 @@ def to_mcp_tool(process: Process, meta_prefix: str) -> McpTool:
         if tool_hint and tool_hint.annotations
         else None,
         field_meta={
-            f"{meta_prefix}-{to_snake_case(property_name)}": property_value
+            f"{meta_prefix}-{to_kebab_case(property_name)}": property_value
             for property_name in ("aliases", "useWhen", "doNotUseWhen")
             if (property_value := getattr(tool_hint, property_name, None))
         },
