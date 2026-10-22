@@ -34,7 +34,7 @@ class Cwl2McpOptions(BaseModel):
     model_config = ConfigDict(extra="forbid")
     output: Path = Field(default=Path("tools.json"), description="Output JSON file path")
     meta_prefix: str = Field(
-        default="transpiler-mate.github.io/cwl2mcp", description="The '_meta' property prefix"
+        default="io.github.transpiler-mate/cwl2mcp", description="The '_meta' property prefix"
     )
 
 
