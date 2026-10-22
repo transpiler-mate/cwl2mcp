@@ -16,6 +16,7 @@
 
 import re
 from collections.abc import Mapping
+from typing import Any
 
 from cwl2ogc import BaseCWLtypes2OGCConverter
 from cwl_utils.parser import Process
@@ -126,3 +127,16 @@ def to_mcp_tool(process: Process, meta_prefix: str) -> McpTool:
             if (property_value := getattr(tool_hint, property_name, None))
         },
     )
+
+
+def to_mcp_tool_dict(process: Process, meta_prefix: str) -> dict[str, Any]:
+    """Convert a process, using its optional MCP hint for tool metadata.
+
+    Args:
+        process: Parsed CWL process to expose as a tool.
+        meta_prefix: Prefix for custom MCP metadata keys.
+
+    Raises:
+        schema_salad.exceptions.ValidationException: If the MCP hint is invalid.
+    """
+    return to_mcp_tool(process, meta_prefix).model_dump(by_alias=True, exclude_none=True)
