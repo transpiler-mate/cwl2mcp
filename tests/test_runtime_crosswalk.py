@@ -85,9 +85,9 @@ def test_runtime_metadata_matches_crosswalk(exported_tool: dict[str, JsonValue])
         "openWorldHint": False,
     }
     assert exported_tool["_meta"] == {
-        "transpiler-mate.github.io/cwl2mcp-aliases": ["inspect a spatial source"],
-        "transpiler-mate.github.io/cwl2mcp-use_when": "the user needs to inspect a spatial source.",
-        "transpiler-mate.github.io/cwl2mcp-do_not_use_when": "the user needs data modification.",
+        "io.github.transpiler-mate/cwl2mcp-aliases": ["inspect a spatial source"],
+        "io.github.transpiler-mate/cwl2mcp-use-when": "the user needs to inspect a spatial source.",
+        "io.github.transpiler-mate/cwl2mcp-do-not-use-when": "the user needs data modification.",
     }
 
 

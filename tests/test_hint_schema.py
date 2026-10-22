@@ -52,3 +52,46 @@ def test_hint_title_overrides_process_label_in_mcp_output() -> None:
 def test_rejects_non_string_title() -> None:
     with pytest.raises(ValidationException, match="title"):
         get_tool_hint(_process(123))
+
+
+@pytest.mark.parametrize("field", ["name", "aliases", "useWhen", "doNotUseWhen", "annotations"])
+def test_rejects_missing_required_hint_fields(field: str) -> None:
+    process = _process("Inspect Source")
+    assert process.hints is not None
+    del process.hints[0][field]
+
+    with pytest.raises(ValidationException, match=field):
+        get_tool_hint(process)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("name", 123),
+        ("aliases", "single alias"),
+        ("aliases", [123]),
+        ("useWhen", False),
+        ("doNotUseWhen", []),
+        ("annotations", "not annotations"),
+    ],
+)
+def test_rejects_invalid_hint_field_types(field: str, value: JsonValue) -> None:
+    process = _process("Inspect Source")
+    assert process.hints is not None
+    process.hints[0][field] = value
+
+    with pytest.raises(ValidationException, match=field):
+        get_tool_hint(process)
+
+
+@pytest.mark.parametrize(
+    "field", ["readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"]
+)
+@pytest.mark.parametrize("value", [None, "true", 1])
+def test_rejects_missing_or_non_boolean_annotations(field: str, value: JsonValue) -> None:
+    process = _process("Inspect Source")
+    assert process.hints is not None
+    process.hints[0]["annotations"][field] = value
+
+    with pytest.raises(ValidationException, match=field):
+        get_tool_hint(process)

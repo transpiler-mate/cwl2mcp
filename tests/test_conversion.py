@@ -21,7 +21,7 @@ from jsonschema import ValidationError as SchemaValidationError
 from pydantic import ValidationError
 from schema_salad.exceptions import ValidationException
 
-from cwl2mcp.converter import to_mcp_tool
+from cwl2mcp.converter import to_kebab_case, to_mcp_tool, to_mcp_tool_dict
 from cwl2mcp.mcp_hint import Annotations, Tool
 
 
@@ -52,8 +52,8 @@ def test_metadata_precedence_prefix_aliases_and_false_hints() -> None:
     assert tool["description"] == "CWL doc"
     assert tool["_meta"] == {
         "example.org/mcp-aliases": ["alias"],
-        "example.org/mcp-use_when": "needed",
-        "example.org/mcp-do_not_use_when": "unnecessary",
+        "example.org/mcp-use-when": "needed",
+        "example.org/mcp-do-not-use-when": "unnecessary",
     }
     assert tool["annotations"] == dict.fromkeys(
         ["readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"], False
@@ -142,3 +142,40 @@ def test_generated_input_schema_enforces_primitive_types(
 def test_repeated_conversion_is_deterministic() -> None:
     process = _process()
     assert to_mcp_tool(process, "example.org/mcp") == to_mcp_tool(process, "example.org/mcp")
+
+
+@pytest.mark.parametrize(
+    ("name", "expected"),
+    [
+        ("useWhen", "use-when"),
+        ("doNotUseWhen", "do-not-use-when"),
+        ("HTTPServer", "http-server"),
+        ("version2Value", "version2-value"),
+        ("already-kebab", "already-kebab"),
+        ("", ""),
+    ],
+)
+def test_metadata_key_conversion_handles_word_boundaries(name: str, expected: str) -> None:
+    assert to_kebab_case(name) == expected
+
+
+@pytest.mark.parametrize("title", [None, ""])
+def test_hint_without_title_falls_back_to_process_label(title: str | None) -> None:
+    process = _process()
+    hint = _hint()
+    hint.title = title
+    process.hints = [hint]
+
+    assert to_mcp_tool(process, "example.org/mcp").title == "CWL title"
+
+
+def test_dictionary_serialization_uses_mcp_keys_and_omits_absent_metadata() -> None:
+    process = CommandLineTool(id="example", inputs=[], outputs=[])
+
+    tool = to_mcp_tool_dict(process, "example.org/mcp")
+
+    assert set(tool) == {"name", "inputSchema", "outputSchema", "_meta"}
+    assert tool["name"] == "example"
+    assert tool["inputSchema"]["type"] == "object"
+    assert tool["outputSchema"]["type"] == "object"
+    assert tool["_meta"] == {}

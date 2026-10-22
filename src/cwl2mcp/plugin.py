@@ -25,7 +25,7 @@ from transpiler_mate.api import (
     transpiler_plugin,
 )
 
-from cwl2mcp.converter import to_mcp_tool
+from cwl2mcp.converter import to_mcp_tool_dict
 
 
 class Cwl2McpOptions(BaseModel):
@@ -34,7 +34,7 @@ class Cwl2McpOptions(BaseModel):
     model_config = ConfigDict(extra="forbid")
     output: Path = Field(default=Path("tools.json"), description="Output JSON file path")
     meta_prefix: str = Field(
-        default="transpiler-mate.github.io/cwl2mcp", description="The '_meta' property prefix"
+        default="io.github.transpiler-mate/cwl2mcp", description="The '_meta' property prefix"
     )
 
 
@@ -55,14 +55,10 @@ def cwl2mcp(context: TranspilerContext, options: Cwl2McpOptions) -> None:
     """
     try:
         if context.process_id:
-            data = to_mcp_tool(context.resolved_process, options.meta_prefix).model_dump(
-                by_alias=True, exclude_none=True
-            )
+            data = to_mcp_tool_dict(context.resolved_process, options.meta_prefix)
         else:
             data = {
-                process_id: to_mcp_tool(process, options.meta_prefix).model_dump(
-                    by_alias=True, exclude_none=True
-                )
+                process_id: to_mcp_tool_dict(process, options.meta_prefix)
                 for process_id, process in sorted(context.document.items())
             }
     except ValueError as error:

@@ -12,7 +12,7 @@ The decorated object is a plugin registration; a host invokes
 | Option | Python type | Default |
 |---|---|---|
 | `output` | `pathlib.Path` | `tools.json` |
-| `meta_prefix` | `str` | `transpiler-mate.github.io/cwl2mcp` |
+| `meta_prefix` | `str` | `io.github.transpiler-mate/cwl2mcp` |
 
 The runtime exposes these as `--output` and `--meta-prefix`. See
 [output configuration](../how-to/configure-output.md).
