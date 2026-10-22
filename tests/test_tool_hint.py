@@ -91,3 +91,40 @@ def test_returns_existing_tool_hint() -> None:
 def test_rejects_malformed_matching_hint() -> None:
     with pytest.raises(ValidationException, match="missing required field `aliases`"):
         get_tool_hint(_process([{"class": "agent:Tool", "name": "tool"}]))
+
+
+@pytest.mark.parametrize(
+    "unrelated_hint",
+    [None, "not a mapping", {}, {"class": None}, {"class": 42}, {"class": "unknown:Tool"}],
+)
+def test_skips_unrelated_hints_before_matching_tool(unrelated_hint: JsonValue) -> None:
+    process = _process([])
+    hint = Tool("tool", [], "needed", "unnecessary", Annotations(True, False, True, False))
+    process.hints = [unrelated_hint, hint]
+
+    assert get_tool_hint(process) is hint
+
+
+def test_expands_process_namespace_for_mapping_hint() -> None:
+    process = _process([])
+    process.hints = [
+        {
+            "class": "agent:Tool",
+            "name": "literal_name",
+            "aliases": [],
+            "useWhen": "needed",
+            "doNotUseWhen": "unnecessary",
+            "annotations": {
+                "readOnlyHint": True,
+                "destructiveHint": False,
+                "idempotentHint": True,
+                "openWorldHint": False,
+            },
+        }
+    ]
+
+    hint = get_tool_hint(process)
+
+    assert hint is not None
+    assert hint.name == "literal_name"
+    assert hint.title is None
