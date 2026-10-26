@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://Transpiler-Mate.github.io/cwl2mcp/explanation/architecture/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Architecture - CWL 2 MCP</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Architecture";
+        var mkdocs_page_input_path = "explanation/architecture.md";
+        var mkdocs_page_url = "/cwl2mcp/explanation/architecture/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CWL 2 MCP
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/first-steps/">Generate your first MCP Tool</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">How-to guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../how-to/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../how-to/install/">Install</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../how-to/configure-output/">Configure output and metadata</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../how-to/use-with-mcp/">Use with MCP</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/api/">Plugin and Python API</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/crosswalk/">CWL to MCP crosswalk</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/hints_schema.html">Generated hint schema</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Explanation</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Architecture</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#two-schema-boundaries">Two schema boundaries</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#regeneration">Regeneration</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#verification">Verification</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CWL 2 MCP</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Explanation</li>
+      <li class="breadcrumb-item active">Architecture</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Transpiler-Mate/cwl2mcp/edit/main/docs/explanation/architecture.md">Edit on cwl2mcp</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="architecture-and-data-flow">Architecture and data flow<a class="headerlink" href="#architecture-and-data-flow" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code>transpiler-mate-runtime
+  resolves CWL, prepares metadata, selects processes, validates options
+        |
+        v
+cwl2mcp plugin
+  loads the first matching Tool hint
+  delegates input/output schema conversion to cwl2ogc
+  constructs a generated McpTool model
+  serializes one Tool or a process-ID mapping
+        |
+        v
+tools.json
+</code></pre></div>
+<p>The runtime owns document loading and plugin discovery. The
+<a href="../../src/cwl2mcp/plugin.py">plugin</a> writes JSON; the
+<a href="../../src/cwl2mcp/converter.py">converter</a> returns a Tool without performing file
+I/O. An <a href="../../how-to/use-with-mcp/">MCP server</a> must supply execution and protocol
+handling separately.</p>
+<h2 id="two-schema-boundaries">Two schema boundaries<a class="headerlink" href="#two-schema-boundaries" title="Permanent link">&para;</a></h2>
+<p><a href="../../schemas/hints.yaml">schemas/hints.yaml</a> is a Schema Salad extension of
+CWL. Its generated <a href="../../src/cwl2mcp/mcp_hint.py">mcp_hint.py</a> validates custom
+hint mappings. Imported CWL and Salad classes are reused from <code>cwl-utils</code> and
+<code>schema-salad</code>. The generator uses <code>Any</code> constructor annotations; validation
+occurs in <code>fromDoc()</code>, not in those annotations.</p>
+<p><a href="../../schemas/mcp-tool.yaml">schemas/mcp-tool.yaml</a> defines the project's MCP
+Tool authoring profile. Its generated <a href="../../src/cwl2mcp/mcp_tool.py">mcp_tool.py</a>
+contains Pydantic models. This profile is distinct from the official protocol
+schema. Constructing <code>McpTool</code> validates model fields but does not execute the
+embedded JSON Schemas against arguments or results.</p>
+<p>The converter preserves the literal hint name after Salad validation because
+Salad's shared <code>name</code> predicate otherwise applies document-relative identifier
+expansion. Input/output schema conversion uses the pinned <code>cwl2ogc</code> dependency;
+its generated schemas are copied without a separate artifact-receipt layer.</p>
+<h2 id="regeneration">Regeneration<a class="headerlink" href="#regeneration" title="Permanent link">&para;</a></h2>
+<p>Run the configured tasks from the repository root:</p>
+<div class="highlight"><pre><span></span><code>task<span class="w"> </span>generate_mpc_hint
+task<span class="w"> </span>generate_mpc_tool
+task<span class="w"> </span>generate_schema_doc
+</code></pre></div>
+<p>The <code>mpc</code> spelling is the current task name. The Tool task invokes the shared
+Terradue <code>json:create_models</code> task; the hint tasks use Schema Salad. See
+<a href="../../Taskfile.yaml">Taskfile.yaml</a>. Change source schemas and regenerate rather
+than editing generated classes or the <a href="../../reference/hints_schema.html">HTML hint reference</a>.</p>
+<h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">&para;</a></h2>
+<p><a href="../../tests/test_runtime_crosswalk.py">Runtime integration tests</a> exercise real
+CLI discovery and exported JSON. Assertions cover the current scalar URI/DateTime projection, metadata keys,
+selected-process and document exports, and deterministic serialization. The
+<a href="../../tests/test_hint_schema.py">hint schema tests</a> cover the title and nested
+annotation handling. Run <code>task quality:pre-commit:run</code> for the complete quality gate. The test
+environments install JSON Schema format validators so malformed URI and
+date-time values are rejected.</p>
+<p>The hint-generation task applies reviewed Ruff rewrites and formatting after
+code generation. Generated loader complexity and schema-shaped signatures have
+file-specific Ruff exceptions; the upstream abstract-loader registration has a
+narrow mypy exception. Other checks remain enabled. See the comments in
+<a href="../../pyproject.toml">pyproject.toml</a> for these generated-code boundaries.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../" class="btn btn-neutral float-left" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Transpiler-Mate/cwl2mcp" class="fa fa-code-fork" style="color: #fcfcfc"> cwl2mcp</a>
+        </span>
+    
+    
+      <span><a href="../" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
