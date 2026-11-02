@@ -132,7 +132,7 @@ dependencies = [
   "jsonschema[format-nongpl]>=4.26,<5",
   "cwl-loader>=0.27.0",
   "click>=8.4.2,<9",
-  "pytest>=9.1.1,<10",
+  "pytest>=9.2.0,<10",
   "pytest-cov>=7.1.0,<8",
 ]
 
@@ -174,7 +174,7 @@ dependencies = [
   "bandit>=1.9.4",
   "cwl-loader>=0.27.0",
   "click>=8.4.2,<9",
-  "pytest>=9.1.1,<10",
+  "pytest>=9.2.0,<10",
 ]
 
 # ---------------------------------------------------------------------------
@@ -343,6 +343,6 @@ test = [
   "jsonschema[format-nongpl]>=4.26,<5",
   "cwl-loader>=0.27.0",
   "click>=8.4.2,<9",
-  "pytest>=9.1.1,<10",
+  "pytest>=9.2.0,<10",
   "pytest-cov>=7.1.0,<8"
 ]
